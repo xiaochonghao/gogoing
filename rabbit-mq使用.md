@@ -8,7 +8,7 @@ pip install flower
 ```
 
 ```bash
-celery flower --port=5555 --address=127.0.0.1
+celery flower --port=5555 --address=127.0.0.1 --broker=amqp://guest:guest@localhost:5672//
 ```
 
 ### rabbitmq容器启动
@@ -23,7 +23,7 @@ docker run -d --name mq-container -p 5672 -p 15672 rabbitmq:management
 ### 启动celery命令
 
 ```bash
-# 启动30个线程
+# 启动30个线程(如果不指定-c参数，将默认起5个线程)
 celery -A conf worker -l info -c 30 --autoreload
 ```
 

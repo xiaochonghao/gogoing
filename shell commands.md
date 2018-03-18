@@ -23,5 +23,40 @@ tar -xjvf **.tar.bz2
 #### 清空日志
 
 ```
-echo > api.log
+    echo > api.log
 ```
+
+### 重定向符、文件描述符
+
+* 文件描述符：
+    
+    ```
+        0 —— stdin（标准输入）
+        1 —— stdout （标准输出）
+        2 —— stderr （标准错误）
+    ```
+
+* 重定向操作 
+    
+    ```
+        > —— 先清空文件，再写入内容
+        >> —— 将内容直接追加到现有文件的尾部
+    ``` 
+
+* 使用示例：
+    
+    ```
+        # 将stderr单独定向到一个文件，将stdout重定向到另一个文件
+        cmd 2>stderr.txt 1>stdout.txt
+
+        # 将stderr转换成stdout，使得stderr和stdout都被重新定向到同一个文件中：
+        cmd> output.txt 2>&1
+        # 或者下面两条命令，等效
+        cmd &> output.txt
+        cmd >& output.txt
+    ```
+
+    ```
+        # 特殊文件，屏蔽stderr输出
+        ls 123.txt 2> /dev/null
+    ```

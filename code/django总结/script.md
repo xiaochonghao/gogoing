@@ -22,6 +22,13 @@
     sys.path.append(dirname(dirname(dirname(abspath(__file__)))))  # 把manage.py所在目录添加到系统目录
     os.environ['DJANGO_SETTINGS_MODULE'] = 'resop.%s' % MODE  # 设置setting文件
 
+    '''
+    Django 版本大于等于1.7的时候，需要加上下面两句
+    import django
+    django.setup()
+    否则会抛出错误 django.core.exceptions.AppRegistryNotReady: Models aren't loaded yet.
+    '''
+
     if django.VERSION >= (1, 7):  # 自动判断版本，初始化Django环境
         django.setup()
     ```

@@ -1,3 +1,4 @@
+# 常用命令
 #### 压缩
 
 ```php
@@ -46,19 +47,18 @@ tar -xjvf **.tar.bz2
 * 使用示例：
     
     ```
-        # 将stderr单独定向到一个文件，将stdout重定向到另一个文件
-        cmd 2>stderr.txt 1>stdout.txt
+    # 将stderr单独定向到一个文件，将stdout重定向到另一个文件
+    cmd 2>stderr.txt 1>stdout.txt
 
-        # 将stderr转换成stdout，使得stderr和stdout都被重新定向到同一个文件中：
-        cmd> output.txt 2>&1
-        # 或者下面两条命令，等效
-        cmd &> output.txt
-        cmd >& output.txt
+    # 将stderr转换成stdout，使得stderr和stdout都被重新定向到同一个文件中：
+    cmd> output.txt 2>&1
+    1. 2>&1 是将标准出错重定向到标准输出，这里的标准输出已经重定向到了out.file文件，即将标准出错也输出到out.file文件中。最后一个&， 是让该命令在后台执行。
+    2. 试想2>1代表什么，2与>结合代表错误重定向，而1则代表错误重定向到一个文件1，而不代表标准输出；换成2>&1，&与1结合就代表标准输出了，就变成错误重定向到标准输出.
     ```
 
     ```
-        # 特殊文件，屏蔽stderr输出
-        ls 123.txt 2> /dev/null
+    # 特殊文件，屏蔽stderr输出
+    ls 123.txt 2> /dev/null
     ```
 
 #### cat命令特殊使用
@@ -104,7 +104,23 @@ tar -xjvf **.tar.bz2
 +x : 刚创建出来的文件没有执行的权限，需要加这个参数执行赋予脚本执行权限，或者使用参数775。
 ```
 
-## shell脚本
+#### linux后台执行命令：`& `和 `nohub`
+
+* `&` 实现后台运行
+
+    ```
+    command > out.file 2>&1 &
+    ```
+    缺点：当控制台关掉（退出账户时），作业就会停止运行。
+
+* `nohup`(no hang up-非挂起)
+
+    ```
+    nohup command > myout.file 2>&1 &
+    ```
+    当前账户使用`exit`命令正常退出，能保证命令后台一直运行。如果缺省`myout.file`参数，将默认输出到名字为`nohup.out`的文件中。
+
+# shell脚本
 
 * 在为shell脚本传递的参数中**如果包含空格，应该使用单引号或者双引号将该参数括起来，以便于脚本将这个参数作为整体来接收。**
 
@@ -136,3 +152,35 @@ tar -xjvf **.tar.bz2
      -lt | //小于
      ge | //大于等于
      le | //小于等于
+
+#### netstat基本用法
+
+1. 列出所有连接
+
+    ```
+    $ netstat -a
+    ```
+
+2. 禁用反向域名解析，加快查询下速度
+
+    ```
+    $ netstat -ant
+    Active Internet connections (servers and established)
+    Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+    tcp        0      0 127.0.1.1:53            0.0.0.0:*               LISTEN     
+    tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN     
+    tcp        0      0 192.168.1.2:49058       173.255.230.5:80        ESTABLISHED
+    tcp        0      0 192.168.1.2:33324       173.194.36.117:443      ESTABLISHED
+    tcp6       0      0 ::1:631                 :::*                    LISTEN
+    ```
+
+3. 只列出监听中的连接
+
+    ```
+    $ netstat -tnl
+    Active Internet connections (only servers)
+    Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+    tcp        0      0 127.0.1.1:53            0.0.0.0:*               LISTEN     
+    tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN     
+    tcp6       0      0 ::1:631                 :::*                    LISTEN
+    ```
